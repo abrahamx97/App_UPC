@@ -7,10 +7,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
 import java.io.*;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import cz.msebera.android.httpclient.Header;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -46,56 +52,36 @@ public class LoginActivity extends AppCompatActivity {
             //salir del evento
         }
 
-        final String usuario = txtUsuario.getText().toString() ;
-        final String contrasena = txtContrasena.getText().toString();
+        String usuario = txtUsuario.getText().toString() ;
+        String contrasena = txtContrasena.getText().toString();
 
-        Thread hilo = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                enviarDatos(usuario, contrasena);
-            }
-        });
-
-        hilo.start();
-
+        enviarDatos(usuario,contrasena);
 
 
         txtUsuario.setText("");
         txtContrasena.setText("");
 
     }
-    private String readStream(InputStream is) {
-        try {
-            ByteArrayOutputStream bo = new ByteArrayOutputStream();
-            int i = is.read();
-            while(i != -1) {
-                bo.write(i);
-                i = is.read();
-            }
-            return bo.toString();
-        } catch (IOException e) {
-            return "";
-        }
-    }
+
 
     private void enviarDatos(String usuario, String contrasena){
-
-        try{
-            URL url = new URL("http://www.android.com/");
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
-            try{
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                readStream(in);
-            }finally {
-                urlConnection.disconnect();
+        AsyncHttpClient client = new AsyncHttpClient();
+        String url="http://http://192.168.43.204/login.php";
+        String parametros = "usuario="+usuario+"&contrasena"+contrasena;
+        client.post(url + parametros, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statuscode, Header[] headers, byte[] responseBody) {
+                if (statuscode==200){
+                    String resultado = new String(responseBody);
+                    Toast.makeText(LoginActivity.this,"Ok: "+resultado, Toast.LENGTH_SHORT).show();
+                }
             }
 
-        }catch (Exception e){
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
 
-        }
-
-
+            }
+        });
     }
 
 }

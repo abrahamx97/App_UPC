@@ -6,10 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestHandle;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.*;
 
@@ -21,6 +28,7 @@ import cz.msebera.android.httpclient.Header;
 public class LoginActivity extends AppCompatActivity {
 
     EditText txtUsuario, txtContrasena;
+    TextView textEstado;
 
     private Handler puente = new Handler(){
         @Override
@@ -37,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
 
         txtUsuario = (EditText) findViewById(R.id.textUsuario);
         txtContrasena = (EditText) findViewById(R.id.textContrasena);
-
+        textEstado = (TextView) findViewById(R.id.textEstado);
 
     }
 
@@ -66,22 +74,33 @@ public class LoginActivity extends AppCompatActivity {
 
     private void enviarDatos(String usuario, String contrasena){
         AsyncHttpClient client = new AsyncHttpClient();
-        String url="http://http://192.168.43.204/login.php";
-        String parametros = "usuario="+usuario+"&contrasena"+contrasena;
-        client.post(url + parametros, new AsyncHttpResponseHandler() {
+        String url="http://192.168.43.204/appupc/login.php";
+        RequestParams rq=new RequestParams();
+        rq.put("usuario",usuario);
+        rq.put("contrasena",contrasena);
+        client.post(url, rq, new JsonHttpResponseHandler(){
             @Override
-            public void onSuccess(int statuscode, Header[] headers, byte[] responseBody) {
-                if (statuscode==200){
-                    String resultado = new String(responseBody);
-                    Toast.makeText(LoginActivity.this,"Ok: "+resultado, Toast.LENGTH_SHORT).show();
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+                    String estado = "0";
+                    if (response.getString("estado").equals("1")){
+                        estado="1";
+                    };
+                    textEstado.setText(estado);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 
             @Override
-            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                textEstado.setText("No paso");
             }
         });
+
+
     }
 
 }

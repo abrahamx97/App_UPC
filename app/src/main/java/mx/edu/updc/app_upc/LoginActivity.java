@@ -84,8 +84,8 @@ public class LoginActivity extends AppCompatActivity {
                 super.onSuccess(statusCode, headers, response);
                 try {
                     String estado = "0";
-                    if (response.getString("estado").equals("1")){
-                        estado="1";
+                    if (response.getString("estado").equals("1")) {
+                        estado = "1";
                     };
                     textEstado.setText(estado);
                 } catch (JSONException e) {

@@ -1,37 +1,25 @@
 package mx.edu.updc.app_upc;
 
-import android.os.Handler;
-import android.os.Message;
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestHandle;
 import com.loopj.android.http.RequestParams;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.*;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import cz.msebera.android.httpclient.Header;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public final int activo=1;
-    public final int baja=0;
-    EditText txtContrasena;
-    AutoCompleteTextView txtUsuario;
+
+    private EditText txtContrasena;
+    private AutoCompleteTextView txtUsuario;
+    private Intent sesionActivity;
+    private UPClient upClient = new UPClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +28,11 @@ public class LoginActivity extends AppCompatActivity {
 
         txtUsuario = (AutoCompleteTextView) findViewById(R.id.textUsuario);
         txtContrasena = (EditText) findViewById(R.id.textContrasena);
+        sesionActivity = new Intent(this, SesionActivity.class);
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void login(View v){
         String usuario = txtUsuario.getText().toString() ;
         String contrasena = txtContrasena.getText().toString();
@@ -52,50 +42,24 @@ public class LoginActivity extends AppCompatActivity {
         }else if (contrasena.trim().length()==0){
             txtContrasena.requestFocus();
         }else {
-            conectar(usuario, contrasena);
+            if (conectar(usuario, contrasena)) {
+                startActivity(sesionActivity);
+                finish();  //limpia la actividad de la memoria para no tenerla en pila
+            }
         }
 
     }
 
 
-    private void conectar(String usuario, String contrasena){
-        AsyncHttpClient client = new AsyncHttpClient();
+    private boolean conectar(String usuario, String contrasena){
         String url="http://192.168.43.204/appupc/login.php";
         RequestParams rq=new RequestParams();
         rq.put("usuario",usuario);
         rq.put("contrasena",contrasena);
-        client.post(url, rq, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                try {
-                    int encontrado=1;
-                    if (response.getInt("estado")==encontrado){
-                        if (response.getInt("activo")==activo) {
-                            int id_profesor = response.getInt("id_profesor");
 
-                        }else if (response.getInt("activo")==baja){
-                            //SI EL USUARIO ESTA DADO DE BAJA
-                        }
-                    }else{
-                        //NO SE ENCONTRO USUARIO
-                    }
+        boolean logeado = upClient.JSON_get(url,rq);
 
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                //NO SE RETORNO UN JSON VALIDO
-            }
-        });
-
-
+        return logeado;
     }
 
 }

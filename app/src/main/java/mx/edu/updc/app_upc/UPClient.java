@@ -11,16 +11,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.Serializable;
+
 import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by root on 2/12/16.
  */
 
-public class UPClient {
+public class UPClient{
 
     UPClient(){
-
+        datos = null;
     }
 
 
@@ -28,18 +30,26 @@ public class UPClient {
     private final int activo=1;
     private final int baja=0;
     private boolean logeado;
+    private JSONObject datos;
 
-    public boolean JSON_get(String URL, RequestParams params ){
+    public Maestro getMaestro() throws JSONException {
+        Maestro maestro=null;
+        if (datos!=null){
+            maestro = new Maestro(datos);
+        }
+        return maestro;
+    };
+
+    public boolean postConnection(String URL, RequestParams params ){
         client.post(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
                     int encontrado=1;
-                    if (response.getInt("estado")==encontrado){
+                    if (response.getInt("logeado")==encontrado){    //SE ENCONTRO AL USUARIO
                         if (response.getInt("activo")==activo) {
-                            int id_profesor = response.getInt("id_profesor");
-                            //CARGAR TODO
+                            datos=response;
                             logeado = true;
                         }else if (response.getInt("activo")==baja){
                             //SI EL USUARIO ESTA DADO DE BAJA
@@ -67,20 +77,19 @@ public class UPClient {
         return logeado;
     }
 
-    public void JSON_post(String URL, RequestParams params){
+    public void getConnection(String URL, RequestParams params){
 
     }
 }
 
-class Carreras{
-    JSONObject response ;
-    Carreras(JSONObject response){
-        this.response=response;
+@SuppressWarnings("serial")
+class Maestro implements Serializable{
+    String nombre_maestro;
+    int id_maestro;
+
+    Maestro(JSONObject maestro) throws JSONException {
+        nombre_maestro=maestro.getString("maestro");
+        id_maestro=maestro.getInt("id_maestro");
     }
-
-    public void getInfo(){
-
-    }
-
 
 }

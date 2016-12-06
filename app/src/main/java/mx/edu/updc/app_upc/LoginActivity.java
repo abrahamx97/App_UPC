@@ -4,22 +4,25 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import com.loopj.android.http.RequestParams;
 
-public class LoginActivity extends AppCompatActivity {
+import org.json.JSONException;
+
+public class LoginActivity extends AppCompatActivity{
 
 
     private EditText txtContrasena;
     private AutoCompleteTextView txtUsuario;
     private Intent sesionActivity;
     private UPClient upClient = new UPClient();
+    private Maestro maestro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void login(View v){
+    public void login(View v) throws JSONException {
         String usuario = txtUsuario.getText().toString() ;
         String contrasena = txtContrasena.getText().toString();
 
@@ -43,6 +46,9 @@ public class LoginActivity extends AppCompatActivity {
             txtContrasena.requestFocus();
         }else {
             if (conectar(usuario, contrasena)) {
+                maestro = upClient.getMaestro();
+                sesionActivity.putExtra("maestro", maestro);
+
                 startActivity(sesionActivity);
                 finish();  //limpia la actividad de la memoria para no tenerla en pila
             }
@@ -57,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         rq.put("usuario",usuario);
         rq.put("contrasena",contrasena);
 
-        boolean logeado = upClient.JSON_get(url,rq);
+        boolean logeado = upClient.postConnection(url,rq);
 
         return logeado;
     }

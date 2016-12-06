@@ -10,4 +10,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="mx.edu.updc.app_upc.SesionActivity">
 
+    <TextView
+        android:text="TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="53dp"
+        android:id="@+id/textMaestro"
+        android:layout_alignParentTop="true" />
 </RelativeLayout>

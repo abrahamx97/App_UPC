@@ -4,13 +4,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by root on 6/12/16.
  */
 
-public class Grupo {
+public class Grupo implements Serializable{
 
     String nombre_grupo;
     int id_grupo,id_materia;
@@ -28,11 +29,10 @@ public class Grupo {
     }
 }
 
-class Alumno{
+class Alumno implements Serializable{
 
     String nombre_alumno, matricula,programa;
     int id_alumno;
-
 
     Alumno(JSONObject alumno) throws JSONException {
         nombre_alumno=alumno.getString("nombre_alumno");

@@ -1,17 +1,15 @@
 package mx.edu.updc.app_upc;
 
-import android.widget.EditText;
-import android.widget.TextView;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -39,6 +37,19 @@ public class UPClient{
         }
         return maestro;
     };
+
+    public ArrayList<Grupo> getGrupos() throws JSONException{
+        ArrayList<Grupo> grupos = new ArrayList<Grupo>();
+        if (datos!=null){
+            JSONArray gruposMaestro = datos.optJSONArray("grupos");
+            System.out.printf("Grupos %d",gruposMaestro.length());
+            for (int i=0; i<gruposMaestro.length()-1; i++){
+                System.out.printf("iteracion %d",i);
+                grupos.add(new Grupo(gruposMaestro.getJSONObject(i)));
+            }
+        }
+        return grupos;
+    }
 
     public boolean postConnection(String URL, RequestParams params ){
         client.post(URL, params, new JsonHttpResponseHandler(){

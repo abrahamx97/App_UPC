@@ -15,6 +15,8 @@ import com.loopj.android.http.RequestParams;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
+
 public class LoginActivity extends AppCompatActivity{
 
 
@@ -23,6 +25,7 @@ public class LoginActivity extends AppCompatActivity{
     private Intent sesionActivity;
     private UPClient upClient = new UPClient();
     private Maestro maestro;
+    private ArrayList<Grupo> grupos = new ArrayList<Grupo>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,7 @@ public class LoginActivity extends AppCompatActivity{
 
         txtUsuario = (AutoCompleteTextView) findViewById(R.id.textUsuario);
         txtContrasena = (EditText) findViewById(R.id.textContrasena);
-        sesionActivity = new Intent(this, SesionActivity.class);
+
 
     }
 
@@ -46,9 +49,11 @@ public class LoginActivity extends AppCompatActivity{
             txtContrasena.requestFocus();
         }else {
             if (conectar(usuario, contrasena)) {
+                sesionActivity = new Intent(this, SesionActivity.class);
                 maestro = upClient.getMaestro();
                 sesionActivity.putExtra("maestro", maestro);
-
+                grupos = upClient.getGrupos();
+                sesionActivity.putExtra("grupos",grupos);
                 startActivity(sesionActivity);
                 finish();  //limpia la actividad de la memoria para no tenerla en pila
             }

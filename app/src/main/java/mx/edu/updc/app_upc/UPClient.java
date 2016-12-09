@@ -2,10 +2,6 @@ package mx.edu.updc.app_upc;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.DatabaseUtils;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -15,9 +11,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
 
@@ -26,11 +19,6 @@ import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
  */
 
 public class UPClient{
-
-    UPClient(){
-
-    }
-
 
     private AsyncHttpClient client = new AsyncHttpClient();
     private final int activo=1;
@@ -54,14 +42,15 @@ public class UPClient{
                 for (int j=0; j<alumnos.length(); j++){
                     alumno = alumnos.getJSONObject(j);
                     db.insertarAlumno(null, alumno.getString("id_alumno"), grupo.getString("id_grupo_materia"),
-                            alumno.getString("nombre_alumno"),alumno.getString("matricula"),alumno.getString("alumno_activo"));
+                            alumno.getString("nombre_alumno"),alumno.getString("matricula"),alumno.getString("id_programa"),
+                            alumno.getString("alumno_activo"));
                 }
             }
-            db.getDb().setTransactionSuccessful();
+            db.getDb().setTransactionSuccessful();  //se finaliza exitosamente la transaccion
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {
-            db.getDb().endTransaction();
+            db.getDb().endTransaction();    //se finaliza la transaccion
         }
 
     }

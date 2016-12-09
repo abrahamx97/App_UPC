@@ -1,9 +1,9 @@
 package mx.edu.updc.app_upc;
 
 import android.content.Context;
-        import android.database.sqlite.SQLiteDatabase;
-        import android.database.sqlite.SQLiteOpenHelper;
-        import android.os.Build;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 
 /**
  * Clase que administra la conexión de la base de datos y su estructuración
@@ -73,9 +73,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Tablas.GRUPOS, Grupos.ID,
                 Grupos.ID_GRUPO, Grupos.ID_MATERIA, Grupos.NOMBRE));
 
-        db.execSQL(String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT," +
+        db.execSQL(String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, " +
                         "%s INTEGER NOT NULL,%s TEXT,%s TEXT,%s INTEGER, %s INTEGER %s)",
-                Tablas.ALUMNOS, Alumnos.ID,
+                Tablas.ALUMNOS, Alumnos.ID, Alumnos.ID_PROGRAMA,
                 Alumnos.ID_ALUMNO, Alumnos.NOMBRE, Alumnos.MATRICULA, Alumnos.ACTIVO,
                 Alumnos.ID_GRUPO_MATERIA, Referencias.ID_GRUPO_MATERIA));
 
@@ -92,7 +92,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Tablas.HORARIOS, Horarios.ID,
                 Horarios.ID_GRUPO, Referencias.ID_GRUPO, Horarios.ID_MATERIA, Referencias.ID_MATERIA,
                 Horarios.DIA, Horarios.HORA));
-
     }
 
     @Override

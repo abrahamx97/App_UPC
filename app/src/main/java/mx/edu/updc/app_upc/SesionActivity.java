@@ -1,38 +1,52 @@
 package mx.edu.updc.app_upc;
 
+import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.CursorAdapter;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class SesionActivity extends AppCompatActivity {
-
-    TextView textMaestro;
+    ArrayList<String> id_grupos = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sesion);
         DataBasesOperation dbOperation = new DataBasesOperation(this);
-        //String id_maestro = getIntent().getExtras().getString("id_maestro");
-        /*        Maestro maestro = (Maestro) getIntent().getExtras().getSerializable("maestro");
-        textMaestro = (TextView) findViewById(R.id.textMaestro);
-        textMaestro.setText(maestro.nombre_maestro);*/
+        ListView grupos = (ListView) findViewById(R.id.lista_grupos);
+        ArrayList<String> nombreGrupos = new ArrayList<String>();
 
-        Cursor grupos = dbOperation.obtenerAlumnos();
-        String campos[] = {"nombre"};
-        int to[] = {android.R.id.text1};
-        SimpleCursorAdapter gruposAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, grupos, campos, to,0);
+        Cursor cursorDatos = dbOperation.obtenerGrupos();
+        final Intent alumnosActivity = new Intent(this, AlumnosActivity.class);
+        int indiceNombre = cursorDatos.getColumnIndex("nombre");
+        int indiceID = cursorDatos.getColumnIndex("_id");
+
+        String name,id;
+        for(cursorDatos.moveToFirst(); !cursorDatos.isAfterLast(); cursorDatos.moveToNext()){
+            name = cursorDatos.getString(indiceNombre);
+            id = cursorDatos.getString(indiceID);
+            nombreGrupos.add(name);
+            id_grupos.add(id);
+        }
 
 
-        ListView lista = (ListView) findViewById(R.id.lista_grupos);
-        lista.setAdapter(gruposAdapter);
+        ArrayAdapter adaptadorDatosCursor = new ArrayAdapter(this,android.R.layout.simple_list_item_1, nombreGrupos);
+        grupos.setAdapter(adaptadorDatosCursor);;
+
+        grupos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                alumnosActivity.putExtra("id_grupo_materia", id_grupos.get(i));
+                startActivity(alumnosActivity);
+            }
+        });
 
 
     }

@@ -30,6 +30,7 @@ import java.util.UUID;
 
      class Alumnos {
         static final String ID = "_id";
+        static final String ID_PROGRAMA ="id_programa";
         static final String ID_ALUMNO = "id_alumno";
         static final String ID_GRUPO_MATERIA = "id_grupo_materia";
         static final String NOMBRE = "nombre";

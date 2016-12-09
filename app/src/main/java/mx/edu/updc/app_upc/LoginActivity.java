@@ -2,6 +2,7 @@ package mx.edu.updc.app_upc;
 
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.support.v7.app.AppCompatActivity;
@@ -10,15 +11,8 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-
 import com.loopj.android.http.RequestParams;
-
-import org.json.JSONException;
-
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity{
 
@@ -26,16 +20,13 @@ public class LoginActivity extends AppCompatActivity{
     private EditText txtContrasena;
     private AutoCompleteTextView txtUsuario;
     private Button btn;
-    private final String url="http://192.168.43.204/appupc/login.php";;
-
+    private final String url="http://192.168.43.186/appupc/login.php";;
+    private DataBasesOperation dbOperation = new DataBasesOperation(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        /*DataBaseManager dbManager = new DataBaseManager(this);
-        dbManager.insertarMaestro("1","jose","JOSE1","12345");*/
 
         txtUsuario = (AutoCompleteTextView) findViewById(R.id.textUsuario);
         txtContrasena = (EditText) findViewById(R.id.textContrasena);
@@ -51,7 +42,15 @@ public class LoginActivity extends AppCompatActivity{
                     txtContrasena.requestFocus();
                 }else {
                     if (checkDataBase()){
-                        startActivity(sesionActivity);
+                        Cursor validar = dbOperation.loginMaestro(txtUsuario.getText().toString().trim(),
+                                                                    txtContrasena.getText().toString().trim());
+                        int indiceLogeado = validar.getColumnIndex("logeado");
+
+                        String logeado="0";
+                        for(validar.moveToFirst(); !validar.isAfterLast(); validar.moveToNext()){
+                            logeado = validar.getString(indiceLogeado);
+                        }
+                        if(logeado.equals("1")){startActivity(sesionActivity);}
                     }else{
                         UPClient upClient = new UPClient();
                         RequestParams rq=new RequestParams();

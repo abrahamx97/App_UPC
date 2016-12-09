@@ -6,9 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 
-import static android.R.attr.animationResolution;
-import static android.R.attr.id;
-
 /**
  * Clase auxiliar que implementa a {@link DataBaseHelper} para llevar a cabo el CRUD
  * sobre las entidades existentes.
@@ -26,6 +23,14 @@ public class DataBasesOperation {
         }
     }
 
+    public Cursor loginMaestro(String usuario, String contrasena){
+        SQLiteDatabase db = baseDatos.getReadableDatabase();
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        String[] select = new String[]{"1 as logeado"};
+        builder.setTables(Tablas.MAESTROS);
+        return builder.query(db,select,"usuario='"+usuario+"' AND contrasena='"+contrasena+"'",null,null,null,null);
+    }
+
     public Cursor obtenerMaestro() {
         SQLiteDatabase db = baseDatos.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
@@ -33,11 +38,11 @@ public class DataBasesOperation {
         return builder.query(db,columMaestros,null,null,null,null,null);
     };
 
-    public Cursor obtenerAlumnos() {
+    public Cursor obtenerAlumnos(String id_grupo_materia) {
         SQLiteDatabase db = baseDatos.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
         builder.setTables(Tablas.ALUMNOS);
-        return builder.query(db,columAlumnos,null,null,null,null,null);
+        return builder.query(db,columAlumnos,"id_grupo_materia="+id_grupo_materia,null,null,null,null);
     };
 
     public Cursor obtenerGrupos() {
@@ -65,9 +70,10 @@ public class DataBasesOperation {
         db.insertOrThrow(Tablas.MAESTROS, null, valores);
     }
 
-    public void insertarAlumno(String id , String id_alumno, String id_grupo_materia, String nombre, String matricula, String activo){
+    public void insertarAlumno(String id , String id_alumno, String id_grupo_materia, String nombre, String matricula, String id_programa, String activo){
         SQLiteDatabase db = baseDatos.getWritableDatabase();
         ContentValues valores = new ContentValues();
+        valores.put(Alumnos.ID_PROGRAMA,id_programa);
         valores.put(Alumnos.ID, id);
         valores.put(Alumnos.ID_ALUMNO, id_alumno);
         valores.put(Alumnos.NOMBRE,nombre);

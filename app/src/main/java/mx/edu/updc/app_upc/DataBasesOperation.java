@@ -58,6 +58,8 @@ public class DataBasesOperation {
                                                         ,Alumnos.MATRICULA, Alumnos.ACTIVO};
     private final String[] columGrupos = new String[]{Grupos.ID, Grupos.ID_GRUPO,Grupos.ID_MATERIA
                                                         ,Grupos.NOMBRE};
+    private final String[] columAlumnosAsis = new String[]{Alumnos.ID,Alumnos.ID_ALUMNO, Alumnos.ID_GRUPO_MATERIA, Alumnos.NOMBRE
+            ,Alumnos.MATRICULA, Alumnos.ACTIVO, Asistencias.TIPO};
 
     public void insertarMaestro(String id, String id_maestro, String nombre, String usuario, String contrasena) {
         SQLiteDatabase db = baseDatos.getWritableDatabase();
@@ -68,6 +70,46 @@ public class DataBasesOperation {
         valores.put(Maestros.USUARIO,usuario);
         valores.put(Maestros.CONTRASENA,contrasena);
         db.insertOrThrow(Tablas.MAESTROS, null, valores);
+    }
+
+    public Cursor obtenerAlumnosAsis(String id_grupo_materia) {
+        SQLiteDatabase db = baseDatos.getReadableDatabase();
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        String buscar = "alumnos INNER JOIN asistencias ON alumnos.id_alumno = asistencias.id_alumno";
+        builder.setTables(buscar);
+        return builder.query(db,columAlumnosAsis,"id_grupo_materia="+id_grupo_materia,null,null,null,null);
+    }
+
+    public void actualizarAsistencia(String id, String tipo, String fecha) {
+        SQLiteDatabase db = baseDatos.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+        valores.put(Asistencias.TIPO, tipo);
+        valores.put(Asistencias.FECHA, fecha);
+
+        String whereClause = String.format("%s=?", Asistencias.ID);
+        String[] whereArgs = {id};
+
+        db.update(Tablas.ASISTENCIAS, valores, whereClause, whereArgs);
+    }
+
+
+    public void insertarAsistencias(String id, String id_grupo, String id_materia, String id_alumno,
+                                    String id_maestro, String fecha, String tipo, String activo){
+        SQLiteDatabase db = baseDatos.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+        valores.put(Asistencias.ID,id);
+        valores.put(Asistencias.ID_GRUPO, id_grupo);
+        valores.put(Asistencias.ID_MATERIA,id_materia);
+        valores.put(Asistencias.ID_MAESTRO, id_maestro);
+        valores.put(Asistencias.ID_ALUMNO,id_alumno);
+        valores.put(Asistencias.FECHA, fecha);
+        valores.put(Asistencias.TIPO, tipo);
+        valores.put(Asistencias.ACTIVO,activo);
+        db.insertOrThrow(Tablas.ASISTENCIAS,null,valores);
+    }
+
+    public void actualizarAsistencia(){
+
     }
 
     public void insertarAlumno(String id , String id_alumno, String id_grupo_materia, String nombre, String matricula, String id_programa, String activo){

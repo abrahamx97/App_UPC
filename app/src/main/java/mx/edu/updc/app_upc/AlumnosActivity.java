@@ -1,9 +1,7 @@
 package mx.edu.updc.app_upc;
 
-import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.EditText;
 
 public class AlumnosActivity extends AppCompatActivity {
 
@@ -11,9 +9,12 @@ public class AlumnosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alumnos);
-        String id_grupo_materia = getIntent().getExtras().getString("id_grupo_materia");
-        DataBasesOperation dbOperation = new DataBasesOperation(this);
-        Cursor datosAlumnos = dbOperation.obtenerAlumnos(id_grupo_materia);
-
+        AlumnosFragment alumnosFragment = null;
+            alumnosFragment = alumnosFragment.newInstance();
+            alumnosFragment.setDatos_grupo(getIntent().getExtras().getString("id_grupo_materia"),
+                    getIntent().getExtras().getString("id_grupo"),
+                    getIntent().getExtras().getString("id_materia"));
+            getSupportFragmentManager().beginTransaction().add(R.id.activity_alumnos, alumnosFragment)
+                    .commit();
     }
 }

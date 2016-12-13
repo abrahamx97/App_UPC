@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="8dp"
-    android:id="@+id/lista_alumnos_container"
     tools:context="mx.edu.updc.app_upc.AlumnosFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -12,7 +11,6 @@
         android:id="@+id/lista_alumnos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@null"
         />
 
 </FrameLayout>

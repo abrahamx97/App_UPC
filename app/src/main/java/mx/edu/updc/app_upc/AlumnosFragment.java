@@ -1,37 +1,28 @@
 package mx.edu.updc.app_upc;
 
-import android.content.Context;
-import android.net.Uri;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AlumnosFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AlumnosFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class AlumnosFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+    ListView alumnosList;
+    AlumnosAdapter alumnosAdapter;
+    private String id_grupo_materia;
+    private String id_grupo;
+    private String id_materia;
 
     public AlumnosFragment() {
         // Required empty public constructor
+
     }
 
     public static AlumnosFragment newInstance() {
@@ -43,19 +34,14 @@ public class AlumnosFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            //get arguments
         }
-        getActivity().getSupportFragmentManager();
-            //POSIBLE ERROR DE getFragmentManager() por getSupportFragmentManager(): solucion getActivity().getSupportFragmentManager()
-        AlumnosFragment alumnosFragment = (AlumnosFragment) getFragmentManager().findFragmentById(R.id.lista_alumnos_container);
+    }
 
-        if (alumnosFragment == null) {
-            alumnosFragment = alumnosFragment.newInstance();
-            getFragmentManager().beginTransaction()
-                    .add(R.id.lista_alumnos_container, alumnosFragment)
-                    .commit();
-        }
+    public void setDatos_grupo(String id_grupo_materia, String id_grupo, String id_materia){
+        this.id_grupo=id_grupo;
+        this.id_materia=id_materia;
+        this.id_grupo_materia=id_grupo_materia;
     }
 
     @Override
@@ -63,47 +49,24 @@ public class AlumnosFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_alumnos, container, false);
+        DataBasesOperation dbOperation = new DataBasesOperation(getContext());
+
+        //instancia del listView
+        alumnosList = (ListView) root.findViewById(R.id.lista_alumnos);
+        ArrayList<ItemAlumno> items = new ArrayList<ItemAlumno>();
+
+        Cursor alumnos = dbOperation.obtenerAlumnos(id_grupo_materia);
+        int indice_matricula = alumnos.getColumnIndex(Alumnos.MATRICULA);
+        int indice_nombre = alumnos.getColumnIndex(Alumnos.NOMBRE);
+        //int indice_programa = alumnos.getColumnIndex(Alumnos.)
+        for(alumnos.moveToFirst(); !alumnos.isAfterLast(); alumnos.moveToNext()){
+            items.add(new ItemAlumno(alumnos.getString(indice_matricula)+" "+alumnos.getString(indice_nombre),
+                    "Software",R.drawable.app_development));
+        }
+
+        alumnosAdapter = new AlumnosAdapter(getContext(),items);
+        alumnosList.setAdapter(alumnosAdapter);
         return root;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

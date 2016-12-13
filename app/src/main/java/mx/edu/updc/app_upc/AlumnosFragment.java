@@ -55,7 +55,8 @@ public class AlumnosFragment extends Fragment {
         alumnosList = (ListView) root.findViewById(R.id.lista_alumnos);
         ArrayList<ItemAlumno> items = new ArrayList<ItemAlumno>();
 
-        Cursor alumnos = dbOperation.obtenerAlumnos(id_grupo_materia);
+        //Cursor alumnos = dbOperation.obtenerAlumnos(id_grupo_materia);
+        Cursor alumnos = dbOperation.obtenerAlumnosAsis(id_grupo_materia);
         int indice_matricula = alumnos.getColumnIndex(Alumnos.MATRICULA);
         int indice_nombre = alumnos.getColumnIndex(Alumnos.NOMBRE);
         //int indice_programa = alumnos.getColumnIndex(Alumnos.)

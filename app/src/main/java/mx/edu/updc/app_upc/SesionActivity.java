@@ -56,13 +56,17 @@ public class SesionActivity extends AppCompatActivity {
                 Cursor alumnos = dbOperation.obtenerAlumnos(id_grupo_materia.get(i));
                 int columna_id_alumno = alumnos.getColumnIndex(Alumnos.ID_ALUMNO);
 
-                dbOperation.getDb().beginTransaction();
-                for(alumnos.moveToFirst(); alumnos.isAfterLast(); alumnos.moveToNext()){
-                    dbOperation.insertarAsistencias(null, id_grupo.get(i),id_materia.get(i),
-                            alumnos.getString(columna_id_alumno),"1"," now() ","A","1");
-                }
+                try{
+                    dbOperation.getDb().beginTransaction();
+                    for(alumnos.moveToFirst(); alumnos.isAfterLast(); alumnos.moveToNext()){
+                        dbOperation.insertarAsistencias(null, id_grupo.get(i),id_materia.get(i),
+                                alumnos.getString(columna_id_alumno),"1"," now() ","A","1");
+                    }
 
-                dbOperation.getDb().setTransactionSuccessful();
+                    dbOperation.getDb().setTransactionSuccessful();
+                }finally {
+                    dbOperation.getDb().endTransaction();
+                }
 
                 startActivity(alumnosActivity);
             }

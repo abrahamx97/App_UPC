@@ -20,7 +20,8 @@ public class LoginActivity extends AppCompatActivity{
     private EditText txtContrasena;
     private AutoCompleteTextView txtUsuario;
     private Button btn;
-    private final String url="http://192.168.43.186/appupc/login.php";;
+    //private final String url="http://192.168.43.186/appupc/login.php";
+    private final String url="https://github.com/abrahamx97/App_UPC/blob/master/datos_maestro.php";
     private DataBasesOperation dbOperation = new DataBasesOperation(this);
 
     @Override
@@ -56,7 +57,7 @@ public class LoginActivity extends AppCompatActivity{
                         RequestParams rq=new RequestParams();
                         rq.put("usuario",txtUsuario.getText().toString());
                         rq.put("contrasena",txtContrasena.getText().toString());
-                        upClient.postConnection(url,rq, getApplicationContext());
+                        upClient.postConnection(url,null, getApplicationContext());
                     }
                 }
             }

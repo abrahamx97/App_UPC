@@ -29,8 +29,9 @@ import java.util.UUID;
     }
 
      class Alumnos {
-        static final String ID = "_id";
+        static final String ID = "_id"; //ID AUTOINCREMENTABLE
         static final String ID_PROGRAMA ="id_programa";
+        static final String NOMBRE_PROGRAMA="programa";
         static final String ID_ALUMNO = "id_alumno";
         static final String ID_GRUPO_MATERIA = "id_grupo_materia";
         static final String NOMBRE = "nombre";
@@ -40,10 +41,8 @@ import java.util.UUID;
 
      class Asistencias {
         static final String ID = "_id";
-        static final String ID_GRUPO = "ide_grupo";
-        static final String ID_MATERIA = "id_materia";
+        static final String ID_GRUPO_MATERIA = "id_grupo_materia";
         static final String ID_ALUMNO = "id_alumno";
-        static final String ID_MAESTRO = "id_maestro";
         static final String TIPO = "tipo";
         static final String FECHA = "fecha";
         static final String ACTIVO = "activo";

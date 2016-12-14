@@ -2,6 +2,7 @@ package mx.edu.updc.app_upc;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -10,14 +11,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SesionActivity extends AppCompatActivity {
     ArrayList<String> id_grupo_materia = new ArrayList<String>();
-    ArrayList<String> id_grupo = new ArrayList<String>();
-    ArrayList<String> id_materia = new ArrayList<String>();
+    private  final SimpleDateFormat senhor_formato = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +33,11 @@ public class SesionActivity extends AppCompatActivity {
         final Intent alumnosActivity = new Intent(this, AlumnosActivity.class);
         int indiceNombre = cursorDatos.getColumnIndex(Grupos.NOMBRE);
         int indiceID = cursorDatos.getColumnIndex(Grupos.ID);
-        int indiceId_grupo = cursorDatos.getColumnIndex(Grupos.ID_GRUPO);
-        int indiceId_materia = cursorDatos.getColumnIndex(Grupos.ID_MATERIA);
 
 
         for(cursorDatos.moveToFirst(); !cursorDatos.isAfterLast(); cursorDatos.moveToNext()){
             nombreGrupos.add(cursorDatos.getString(indiceNombre));
             id_grupo_materia.add(cursorDatos.getString(indiceID));
-            id_grupo.add(cursorDatos.getString(indiceId_grupo));
-            id_materia.add(cursorDatos.getString(indiceId_materia));
         }
 
 
@@ -50,22 +48,24 @@ public class SesionActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 alumnosActivity.putExtra("id_grupo_materia", id_grupo_materia.get(i));
-                alumnosActivity.putExtra("id_grupo",id_grupo.get(i));
-                alumnosActivity.putExtra("id_materia",id_materia.get(i));
 
                 Cursor alumnos = dbOperation.obtenerAlumnos(id_grupo_materia.get(i));
                 int columna_id_alumno = alumnos.getColumnIndex(Alumnos.ID_ALUMNO);
+                String now = senhor_formato.format(new Date());
 
-                try{
-                    dbOperation.getDb().beginTransaction();
-                    for(alumnos.moveToFirst(); alumnos.isAfterLast(); alumnos.moveToNext()){
-                        dbOperation.insertarAsistencias(null, id_grupo.get(i),id_materia.get(i),
-                                alumnos.getString(columna_id_alumno),"1"," now() ","A","1");
+
+                if(!dbOperation.existeLista(id_grupo_materia.get(i))) {
+                    try {
+                        dbOperation.getDb().beginTransaction();
+                        for (alumnos.moveToFirst(); !alumnos.isAfterLast(); alumnos.moveToNext()) {
+                            dbOperation.insertarAsistencias(null, id_grupo_materia.get(i),
+                                    alumnos.getString(columna_id_alumno),now, "A", "1");
+                        }
+
+                        dbOperation.getDb().setTransactionSuccessful();
+                    } finally {
+                        dbOperation.getDb().endTransaction();
                     }
-
-                    dbOperation.getDb().setTransactionSuccessful();
-                }finally {
-                    dbOperation.getDb().endTransaction();
                 }
 
                 startActivity(alumnosActivity);

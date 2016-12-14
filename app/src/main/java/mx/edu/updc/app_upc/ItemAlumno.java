@@ -6,14 +6,22 @@ package mx.edu.updc.app_upc;
 
 public class ItemAlumno {
 
-    private String matricula_nombre;
-    private String programa_educativo;
+    private String matricula_nombre,programa_educativo,estado_en_lista;
     private int imagen;
 
-    public ItemAlumno(String matricula_nombre,  String programa_educativo, int imagen) {
+    public ItemAlumno(String matricula_nombre,  String programa_educativo, int imagen, String estado_en_lista) {
         this.matricula_nombre = matricula_nombre;
         this.programa_educativo = programa_educativo;
+        this.estado_en_lista=estado_en_lista;
         this.imagen = imagen;
+    }
+
+    public String getEstado_en_lista(){
+        return estado_en_lista;
+    }
+
+    public void setEstado_en_lista(String estado_en_lista){
+        this.estado_en_lista=estado_en_lista;
     }
 
     public String getMatricula_nombre() {

@@ -3,8 +3,14 @@ package mx.edu.updc.app_upc;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.support.design.widget.TabLayout;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * Clase auxiliar que implementa a {@link DataBaseHelper} para llevar a cabo el CRUD
@@ -17,11 +23,74 @@ public class DataBasesOperation {
 
     //private static DataBasesOperation instancia = new DataBasesOperation();
 
+    private String obtenerHoy(){
+        DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        return "'"+dateFormat1.format(cal.getTime())+"'";
+
+    }
+
+    private  String obtenerManana(){
+        DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE,+1);
+        return "'"+dateFormat1.format(cal.getTime())+"'";
+    }
+
     public DataBasesOperation(Context contexto) {
         if (baseDatos == null) {
             baseDatos = new DataBaseHelper(contexto);
         }
     }
+
+    public int obtenerImagen(int i){
+        int imagen;
+        switch(i){
+            //Biotecnología
+            case 1:
+                imagen = R.drawable.bio;
+                break;
+            //Mecánica Automotriz
+            case 2:
+                imagen = R.drawable.auto;
+                break;
+            //Mecatrónica
+            case 3:
+                imagen = R.drawable.meca;
+                break;
+            //Electrónica y Telecom
+            case 4:
+                imagen = R.drawable.elec;
+                break;
+            //Software
+            case 5:
+                imagen = R.drawable.soft;
+                break;
+            //Geofísica Petrolera
+            case 6:
+                imagen = R.drawable.geo;
+                break;
+            default:
+                imagen = 0;
+        }
+        return imagen;
+    }
+
+    public boolean existeLista(String id_grupo_materia){
+        SQLiteDatabase db = baseDatos.getReadableDatabase();
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        String[] select ={"1 as existe"};
+        builder.setTables(Tablas.ASISTENCIAS);
+
+        if (!builder.query(db,select,Asistencias.FECHA+">"+obtenerHoy()+" AND "
+                +Asistencias.FECHA+"<"+obtenerManana()+" AND "+
+                Asistencias.ID_GRUPO_MATERIA+"="+id_grupo_materia,null,null,null,null).moveToFirst()){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 
     public Cursor loginMaestro(String usuario, String contrasena){
         SQLiteDatabase db = baseDatos.getReadableDatabase();
@@ -58,9 +127,11 @@ public class DataBasesOperation {
                                                         ,Alumnos.MATRICULA, Alumnos.ACTIVO};
     private final String[] columGrupos = new String[]{Grupos.ID, Grupos.ID_GRUPO,Grupos.ID_MATERIA
                                                         ,Grupos.NOMBRE};
-    private final String[] columAlumnosAsis = new String[]{Tablas.ALUMNOS+"."+Alumnos.ID,Tablas.ALUMNOS+"."+Alumnos.ID_ALUMNO,
-            Tablas.ALUMNOS+"."+Alumnos.ID_GRUPO_MATERIA, Tablas.ALUMNOS+"."+Alumnos.NOMBRE
-            ,Tablas.ALUMNOS+"."+Alumnos.MATRICULA, Tablas.ALUMNOS+"."+Alumnos.ACTIVO, Tablas.ASISTENCIAS+"."+Asistencias.TIPO};
+    private final String[] columAlumnosAsis = new String[]{Tablas.ALUMNOS+"."+Alumnos.ID,
+            Tablas.ALUMNOS+"."+Alumnos.ID_ALUMNO,Tablas.ALUMNOS+"."+Alumnos.ID_GRUPO_MATERIA,
+            Tablas.ALUMNOS+"."+Alumnos.NOMBRE,Tablas.ALUMNOS+"."+Alumnos.ID_PROGRAMA
+            , Tablas.ALUMNOS+"."+Alumnos.NOMBRE_PROGRAMA,Tablas.ALUMNOS+"."+Alumnos.MATRICULA,
+            Tablas.ALUMNOS+"."+Alumnos.ACTIVO, Tablas.ASISTENCIAS+"."+Asistencias.TIPO};
 
     public void insertarMaestro(String id, String id_maestro, String nombre, String usuario, String contrasena) {
         SQLiteDatabase db = baseDatos.getWritableDatabase();
@@ -79,7 +150,10 @@ public class DataBasesOperation {
         String buscar = Tablas.ALUMNOS+" INNER JOIN "+Tablas.ASISTENCIAS+
                 " ON "+Tablas.ALUMNOS+".id_alumno = "+Tablas.ASISTENCIAS+".id_alumno";
         builder.setTables(buscar);
-        return builder.query(db,columAlumnosAsis,"id_grupo_materia="+id_grupo_materia,null,null,null,null);
+        return builder.query(db,columAlumnosAsis,Tablas.ALUMNOS+".id_grupo_materia="+id_grupo_materia+
+                " AND "+Tablas.ASISTENCIAS+".id_grupo_materia="+id_grupo_materia+" AND "+
+                Asistencias.FECHA+">"+obtenerHoy()+" AND "+Asistencias.FECHA+"<"+obtenerManana(),
+                null,null,null,null);
     }
 
     public void actualizarAsistencia(String id, String tipo, String fecha) {
@@ -95,14 +169,12 @@ public class DataBasesOperation {
     }
 
 
-    public void insertarAsistencias(String id, String id_grupo, String id_materia, String id_alumno,
-                                    String id_maestro, String fecha, String tipo, String activo){
+    public void insertarAsistencias(String id,  String id_grupo_materia, String id_alumno,
+                                     String fecha, String tipo, String activo){
         SQLiteDatabase db = baseDatos.getWritableDatabase();
         ContentValues valores = new ContentValues();
         valores.put(Asistencias.ID,id);
-        valores.put(Asistencias.ID_GRUPO, id_grupo);
-        valores.put(Asistencias.ID_MATERIA,id_materia);
-        valores.put(Asistencias.ID_MAESTRO, id_maestro);
+        valores.put(Asistencias.ID_GRUPO_MATERIA,id_grupo_materia);
         valores.put(Asistencias.ID_ALUMNO,id_alumno);
         valores.put(Asistencias.FECHA, fecha);
         valores.put(Asistencias.TIPO, tipo);
@@ -110,14 +182,12 @@ public class DataBasesOperation {
         db.insertOrThrow(Tablas.ASISTENCIAS,null,valores);
     }
 
-    public void actualizarAsistencia(){
-
-    }
-
-    public void insertarAlumno(String id , String id_alumno, String id_grupo_materia, String nombre, String matricula, String id_programa, String activo){
+    public void insertarAlumno(String id , String id_alumno, String id_grupo_materia, String nombre,
+                               String matricula, String id_programa, String programa, String activo){
         SQLiteDatabase db = baseDatos.getWritableDatabase();
         ContentValues valores = new ContentValues();
         valores.put(Alumnos.ID_PROGRAMA,id_programa);
+        valores.put(Alumnos.NOMBRE_PROGRAMA,programa);
         valores.put(Alumnos.ID, id);
         valores.put(Alumnos.ID_ALUMNO, id_alumno);
         valores.put(Alumnos.NOMBRE,nombre);

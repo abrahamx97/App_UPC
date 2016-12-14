@@ -21,10 +21,13 @@ import java.util.List;
 
 public class AlumnosAdapter extends ArrayAdapter<ItemAlumno> {
     Typeface face;
+    final private String ASISTENCIA="A";
+    final private String RETARDO="R";
+    final private String FALTA="F";
+
     public AlumnosAdapter(Context context, List<ItemAlumno> objects){
         super(context,0,objects);
          face = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
-
     }
 
     @Override
@@ -47,7 +50,7 @@ public class AlumnosAdapter extends ArrayAdapter<ItemAlumno> {
         ImageView avatar = (ImageView) convertView.findViewById(R.id.img_avatar);
         TextView mat_alumno = (TextView) convertView.findViewById(R.id.text_mat_alumno);
         TextView programa_edu = (TextView) convertView.findViewById(R.id.text_programa);
-        //programa_edu.setTextSize(20);
+
         final Button boton_asistencia = (Button) convertView.findViewById(R.id.boton_asistencia);
         final Button boton_retardo = (Button) convertView.findViewById(R.id.boton_retardo);
         final Button boton_falta = (Button) convertView.findViewById(R.id.boton_falta);
@@ -107,6 +110,20 @@ public class AlumnosAdapter extends ArrayAdapter<ItemAlumno> {
         Glide.with(getContext()).load(itemAlumno.getImagen()).into(avatar);
         mat_alumno.setText(itemAlumno.getMatricula_nombre());
         programa_edu.setText(itemAlumno.getPrograma_educativo());
+        String estado_en_lista=itemAlumno.getEstado_en_lista();
+        switch (estado_en_lista){
+            case ASISTENCIA:
+                boton_asistencia.setTextColor(Color.parseColor("#1e9630"));
+                break;
+            case RETARDO:
+                boton_retardo.setTextColor(Color.parseColor("#ffd400"));
+                break;
+            case FALTA:
+                boton_falta.setTextColor(Color.parseColor("#e21e00"));
+                break;
+            default:
+                //DEBE SER JUSTIFICANTE
+        }
 
         return convertView;
     }

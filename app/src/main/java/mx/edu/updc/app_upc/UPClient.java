@@ -43,7 +43,7 @@ public class UPClient{
                     alumno = alumnos.getJSONObject(j);
                     db.insertarAlumno(null, alumno.getString("id_alumno"), grupo.getString("id_grupo_materia"),
                             alumno.getString("nombre_alumno"),alumno.getString("matricula"),alumno.getString("id_programa"),
-                            alumno.getString("alumno_activo"));
+                            alumno.getString("programa"),alumno.getString("alumno_activo"));
                 }
             }
             db.getDb().setTransactionSuccessful();  //se finaliza exitosamente la transaccion

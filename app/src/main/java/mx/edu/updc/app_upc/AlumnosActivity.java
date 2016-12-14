@@ -11,9 +11,7 @@ public class AlumnosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alumnos);
         AlumnosFragment alumnosFragment = null;
             alumnosFragment = alumnosFragment.newInstance();
-            alumnosFragment.setDatos_grupo(getIntent().getExtras().getString("id_grupo_materia"),
-                    getIntent().getExtras().getString("id_grupo"),
-                    getIntent().getExtras().getString("id_materia"));
+            alumnosFragment.setDatos_grupo(getIntent().getExtras().getString("id_grupo_materia"));
             getSupportFragmentManager().beginTransaction().add(R.id.activity_alumnos, alumnosFragment)
                     .commit();
     }

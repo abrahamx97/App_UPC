@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?attr/listPreferredItemHeight"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="8dp"
+    android:id="@+id/manager_layout_grupos">
+
+    <TextView
+        android:id="@+id/text_grupo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Grupo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textAppearance="?attr/textAppearanceListItem"
+        tools:text="001833 Abraham Gutierrez Lara"
+        android:layout_alignParentTop="true"
+        android:textColor="#d3d1d1"
+        android:textSize="18sp" />
+
+
+</RelativeLayout>

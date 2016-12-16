@@ -1,66 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin">
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:id="@+id/layout_login"
+    android:background="#293134">
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_progress"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scroll_login_form">
+        android:id="@+id/scroll_login_form"
+        android:paddingTop="35dp">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:id="@+id/login_layout"
             android:layout_height="match_parent"
-            android:elevation="1dp">
+            android:elevation="1dp"
+            android:backgroundTint="@android:color/holo_green_light">
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:textColorHint="#d3d1d1"
+                android:layout_marginTop="5dp">
 
                 <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Usuario"
-                    android:id="@+id/textUsuario" />
+                    android:id="@+id/textUsuario"
+                    android:textColor="#d3d1d1"
+                    android:textColorHint="#d3d1d1"
+                    android:textColorLink="?android:attr/colorForegroundInverse"
+                    android:textColorHighlight="@android:color/background_light"
+                    android:backgroundTint="#d3d1d1" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:textColorHint="#d3d1d1"
+                android:layout_marginTop="5dp">
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Contraseña"
                     android:inputType="textPassword"
-                    android:id="@+id/textContrasena" />
+                    android:id="@+id/textContrasena"
+                    android:textColorHint="#d3d1d1"
+                    android:textColor="#d3d1d1"
+                    android:textColorHighlight="#d3d1d1"
+                    android:textColorLink="#d3d1d1"
+                    android:backgroundTint="#d3d1d1" />
 
             </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:text="Ingresar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="38dp"
                 android:id="@+id/boton_Ingresar"
-                android:layout_marginTop="@dimen/activity_vertical_margin" />
+                android:layout_marginTop="25dp"
+                android:background="@color/colorAccent"
+                style="@style/Theme.AppCompat.Dialog.Alert"
+                android:textColor="#d3d1d1"
+                android:textSize="16sp" />
 
 
         </LinearLayout>
     </ScrollView>
-
-    <TextView
-        android:text="TextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/probando" />
 
 </LinearLayout>

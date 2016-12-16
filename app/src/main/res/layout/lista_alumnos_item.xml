@@ -63,7 +63,9 @@
         tools:text="Software"
         android:layout_below="@+id/text_mat_alumno"
         android:layout_alignLeft="@+id/text_mat_alumno"
-        android:layout_alignStart="@+id/text_mat_alumno" />
+        android:layout_alignStart="@+id/text_mat_alumno"
+        android:textColor="#d3d1d1"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/text_mat_alumno"
@@ -76,7 +78,9 @@
         android:layout_toRightOf="@+id/img_avatar"
         android:layout_toEndOf="@+id/img_avatar"
         android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp" />
+        android:layout_marginStart="10dp"
+        android:textColor="#d3d1d1"
+        android:textSize="17sp" />
 
 
 </RelativeLayout>

@@ -1,15 +1,17 @@
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="8dp"
-    tools:context="mx.edu.updc.app_upc.AlumnosFragment">
+    tools:context="mx.edu.updc.app_upc.GruposFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <ListView
-        android:id="@+id/lista_alumnos"
+        android:id="@+id/lista_grupos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:footerDividersEnabled="false"
@@ -17,13 +19,13 @@
         android:scrollbarThumbVertical="@drawable/scroll_list_alumnos" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_guardar"
+        android:id="@+id/fab_sincronizar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:baselineAlignBottom="false"
-        android:src="@drawable/content_save"
+        android:src="@drawable/arrow_up_bold_circle"
         app:fabSize="normal"
-        app:backgroundTint="#db320c"/>
+        app:backgroundTint="#db320c" />
 
 </FrameLayout>

@@ -73,6 +73,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Tablas.GRUPOS, Grupos.ID,
                 Grupos.ID_GRUPO, Grupos.ID_MATERIA, Grupos.NOMBRE));
 
+        //Insertar en DataBaseHelper
+        db.execSQL(String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "%s INTEGER NOT NULL,%s DATETIME)",
+                Tablas.SINCRONIZACIONES, Sincronizaciones.ID,
+                Sincronizaciones.ULTIMO, Sincronizaciones.FECHA));
+        //Creamos Sincronizacion 0
+
         db.execSQL(String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s INTEGER, " +
                         " %s TEXT, %s INTEGER NOT NULL,%s TEXT,%s TEXT,%s INTEGER, %s INTEGER %s)",
                 Tablas.ALUMNOS, Alumnos.ID, Alumnos.ID_PROGRAMA, Alumnos.NOMBRE_PROGRAMA,
@@ -80,10 +87,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 Alumnos.ID_GRUPO_MATERIA, Referencias.ID_GRUPO_MATERIA));
 
         db.execSQL(String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "%s INTEGER NOT NULL ," +
+                        "%s INTEGER NOT NULL %s," +
                         "%s INTEGER NOT NULL ,%s TEXT,%s DATETIME,%s INTEGER)",
                 Tablas.ASISTENCIAS, Asistencias.ID,
-                Asistencias.ID_GRUPO_MATERIA, Asistencias.ID_ALUMNO,
+                Asistencias.ID_GRUPO_MATERIA, Referencias.ID_GRUPO_MATERIA, Asistencias.ID_ALUMNO,
                 Asistencias.TIPO, Asistencias.FECHA, Asistencias.ACTIVO));
 
         db.execSQL(String.format("CREATE TABLE %s (%s INTEGER PRIMARY KEY AUTOINCREMENT," +

@@ -24,10 +24,16 @@ public class AlumnosAdapter extends ArrayAdapter<ItemAlumno> {
     final private String ASISTENCIA="A";
     final private String RETARDO="R";
     final private String FALTA="F";
+    final private int num_columnas = 2; //REPRESENTA EL NUM DE CAMPOS NECESARIOS EN ASISTENCIA:
+                                            // ID_AUTO INCREMENTABLE DE ASISTENCIAS, TIPO DE ASISTENCIA
+    public static final int columna_id = 0;
+    public static final int columna_tipo_asistencia = 1;
+    public static String[][] datos;
 
     public AlumnosAdapter(Context context, List<ItemAlumno> objects){
         super(context,0,objects);
-         face = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
+        datos=new String[objects.size()][num_columnas];
+        face = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
     }
 
     @Override
@@ -73,45 +79,55 @@ public class AlumnosAdapter extends ArrayAdapter<ItemAlumno> {
             public void onClick(View view) {
                 if (boton_asistencia.getCurrentTextColor() != Color.parseColor("#1e9630")){
                     boton_asistencia.setTextColor(Color.parseColor("#1e9630"));
-                    boton_falta.setTextColor(Color.parseColor("#000000"));
-                    boton_retardo.setTextColor(Color.parseColor("#000000"));
+                    boton_falta.setTextColor(Color.parseColor("#d3d1d1"));
+                    boton_retardo.setTextColor(Color.parseColor("#d3d1d1"));
                 }
-                boton_asistencia.getTag();
+                datos[Integer.parseInt(boton_asistencia.getTag().toString())][columna_tipo_asistencia]=ASISTENCIA;
             }
         });
         boton_falta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (boton_falta.getCurrentTextColor() != Color.parseColor("#e21e00")){
-                    boton_asistencia.setTextColor(Color.parseColor("#000000"));
+                    boton_asistencia.setTextColor(Color.parseColor("#d3d1d1"));
                     boton_falta.setTextColor(Color.parseColor("#e21e00"));
-                    boton_retardo.setTextColor(Color.parseColor("#000000"));
+                    boton_retardo.setTextColor(Color.parseColor("#d3d1d1"));
                 }
 
-                boton_falta.getTag();
+                datos[Integer.parseInt(boton_falta.getTag().toString())][columna_tipo_asistencia]=FALTA;
             }
         });
         boton_retardo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (boton_retardo.getCurrentTextColor() != Color.parseColor("#ffd400")){
-                    boton_asistencia.setTextColor(Color.parseColor("#000000"));
-                    boton_falta.setTextColor(Color.parseColor("#000000"));
-                    boton_retardo.setTextColor(Color.parseColor("#ffd400"));
+                if (boton_retardo.getCurrentTextColor() != Color.parseColor("#ffc300")){
+                    boton_asistencia.setTextColor(Color.parseColor("#d3d1d1"));
+                    boton_falta.setTextColor(Color.parseColor("#d3d1d1"));
+                    boton_retardo.setTextColor(Color.parseColor("#ffc300"));
                 }
-                boton_retardo.getTag();
+                datos[Integer.parseInt(boton_retardo.getTag().toString())][columna_tipo_asistencia]=RETARDO;
             }
         });
 
         //item de alumno actual
         ItemAlumno itemAlumno = getItem(position);
 
+
         //setup
         Glide.with(getContext()).load(itemAlumno.getImagen()).into(avatar);
         mat_alumno.setText(itemAlumno.getMatricula_nombre());
         programa_edu.setText(itemAlumno.getPrograma_educativo());
-        String estado_en_lista=itemAlumno.getEstado_en_lista();
-        switch (estado_en_lista){
+        datos[position][columna_id]=itemAlumno.getId_en_lista();
+
+        if(datos[position][columna_tipo_asistencia]==null){
+            datos[position][columna_tipo_asistencia]=itemAlumno.getEstado_en_lista();
+        }
+
+        //SE COLOREA EL BOTON REPRESENTANTE A SU TIPO DE ASISTENCIA
+        boton_asistencia.setTextColor(Color.parseColor("#d3d1d1"));
+        boton_retardo.setTextColor(Color.parseColor("#d3d1d1"));
+        boton_falta.setTextColor(Color.parseColor("#d3d1d1"));
+        switch (datos[position][columna_tipo_asistencia]){
             case ASISTENCIA:
                 boton_asistencia.setTextColor(Color.parseColor("#1e9630"));
                 break;
@@ -121,8 +137,6 @@ public class AlumnosAdapter extends ArrayAdapter<ItemAlumno> {
             case FALTA:
                 boton_falta.setTextColor(Color.parseColor("#e21e00"));
                 break;
-            default:
-                //DEBE SER JUSTIFICANTE
         }
 
         return convertView;

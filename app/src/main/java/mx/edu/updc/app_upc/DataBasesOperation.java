@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Clase auxiliar que implementa a {@link DataBaseHelper} para llevar a cabo el CRUD
@@ -41,6 +42,22 @@ public class DataBasesOperation {
         if (baseDatos == null) {
             baseDatos = new DataBaseHelper(contexto);
         }
+    }
+
+    public String obtenerMaxSincro(){
+        SQLiteDatabase db = baseDatos.getReadableDatabase();
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        Cursor c;
+        String [] columna= new String[]{"MAX("+Sincronizaciones.ID+")",Sincronizaciones.ULTIMO};
+        builder.setTables(Tablas.SINCRONIZACIONES);
+        c= builder.query(db,columna,null,null,null,null,null);
+        String ultimo="0";
+        for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()){
+            if(c.getString(c.getColumnIndex(Sincronizaciones.ULTIMO))!=null){
+                ultimo=c.getString(c.getColumnIndex(Sincronizaciones.ULTIMO));
+            }
+            }
+        return ultimo;
     }
 
     public int obtenerImagen(int i){
@@ -120,6 +137,21 @@ public class DataBasesOperation {
         builder.setTables(Tablas.GRUPOS);
         return builder.query(db,columGrupos,null,null,null,null,null);
     };
+    public Cursor obtenerAsisSincronizar(String id){
+        SQLiteDatabase db = baseDatos.getReadableDatabase();
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        String buscar = Tablas.ASISTENCIAS+" INNER JOIN "+Tablas.GRUPOS+
+                " ON "+Tablas.ASISTENCIAS+".id_grupo_materia = "+Tablas.GRUPOS+"._id";
+        builder.setTables(buscar);
+        return builder.query(db,columAsisSincro,Tablas.ASISTENCIAS+"._id>"+id,null,null,null,null);
+    }
+
+    private final String[] columAsisSincro = new String[]{
+            Tablas.ASISTENCIAS+"."+Asistencias.ID, Tablas.GRUPOS+"."+Grupos.ID_GRUPO,
+            Tablas.GRUPOS+"."+Grupos.ID_MATERIA, Tablas.ASISTENCIAS+"."+Asistencias.ID_ALUMNO,
+            Tablas.ASISTENCIAS+"."+Asistencias.FECHA, Tablas.ASISTENCIAS+"."+Asistencias.TIPO,
+            Tablas.ASISTENCIAS+"."+Asistencias.ACTIVO
+    };
 
     private final String[] columMaestros = new String[]{Maestros.ID, Maestros.ID_MAESTRO, Maestros.NOMBRE, Maestros.USUARIO
                                                         ,Maestros.CONTRASENA};
@@ -127,8 +159,7 @@ public class DataBasesOperation {
                                                         ,Alumnos.MATRICULA, Alumnos.ACTIVO};
     private final String[] columGrupos = new String[]{Grupos.ID, Grupos.ID_GRUPO,Grupos.ID_MATERIA
                                                         ,Grupos.NOMBRE};
-    private final String[] columAlumnosAsis = new String[]{Tablas.ALUMNOS+"."+Alumnos.ID,
-            Tablas.ALUMNOS+"."+Alumnos.ID_ALUMNO,Tablas.ALUMNOS+"."+Alumnos.ID_GRUPO_MATERIA,
+    private final String[] columAlumnosAsis = new String[]{Tablas.ASISTENCIAS+"."+Asistencias.ID,
             Tablas.ALUMNOS+"."+Alumnos.NOMBRE,Tablas.ALUMNOS+"."+Alumnos.ID_PROGRAMA
             , Tablas.ALUMNOS+"."+Alumnos.NOMBRE_PROGRAMA,Tablas.ALUMNOS+"."+Alumnos.MATRICULA,
             Tablas.ALUMNOS+"."+Alumnos.ACTIVO, Tablas.ASISTENCIAS+"."+Asistencias.TIPO};
@@ -144,7 +175,7 @@ public class DataBasesOperation {
         db.insertOrThrow(Tablas.MAESTROS, null, valores);
     }
 
-    public Cursor obtenerAlumnosAsis(String id_grupo_materia) {
+    public Cursor obtenerAsistencia_Alumnos(String id_grupo_materia) {
         SQLiteDatabase db = baseDatos.getReadableDatabase();
         SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
         String buscar = Tablas.ALUMNOS+" INNER JOIN "+Tablas.ASISTENCIAS+
@@ -156,16 +187,25 @@ public class DataBasesOperation {
                 null,null,null,null);
     }
 
-    public void actualizarAsistencia(String id, String tipo, String fecha) {
+    public void actualizarAsistencia(String id_asistencia, String tipo) {
         SQLiteDatabase db = baseDatos.getWritableDatabase();
         ContentValues valores = new ContentValues();
+        String now = GruposFragment.senhor_formato.format(new Date());
         valores.put(Asistencias.TIPO, tipo);
-        valores.put(Asistencias.FECHA, fecha);
-
+        valores.put(Asistencias.FECHA, now);
         String whereClause = String.format("%s=?", Asistencias.ID);
-        String[] whereArgs = {id};
+        String[] whereArgs = {id_asistencia};
 
         db.update(Tablas.ASISTENCIAS, valores, whereClause, whereArgs);
+    }
+
+    public void insertarSincronizacion(String id, String ultimo, String fecha){
+        SQLiteDatabase db = baseDatos.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+        valores.put(Sincronizaciones.ID, id);
+        valores.put(Sincronizaciones.ULTIMO, ultimo);
+        valores.put(Sincronizaciones.FECHA, fecha);
+        db.insertOrThrow(Tablas.SINCRONIZACIONES, null, valores);
     }
 
 

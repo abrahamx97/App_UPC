@@ -12,7 +12,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    tools:context="mx.edu.updc.app_upc.SesionActivity"
+    tools:context="mx.edu.updc.app_upc.GruposActivity"
     android:background="#293134">
 
 </RelativeLayout>

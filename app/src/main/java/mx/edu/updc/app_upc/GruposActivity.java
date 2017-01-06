@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-public class SesionActivity extends AppCompatActivity {
+public class GruposActivity extends AppCompatActivity {
     private FloatingActionButton fab_sincronizar;
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override

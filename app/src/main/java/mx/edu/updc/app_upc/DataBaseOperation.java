@@ -18,11 +18,11 @@ import java.util.Date;
  * sobre las entidades existentes.
  */
 
-public class DataBasesOperation {
+public class DataBaseOperation {
 
     private static DataBaseHelper baseDatos;
 
-    //private static DataBasesOperation instancia = new DataBasesOperation();
+    //private static DataBaseOperation instancia = new DataBaseOperation();
 
     private String obtenerHoy(){
         DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -38,7 +38,7 @@ public class DataBasesOperation {
         return "'"+dateFormat1.format(cal.getTime())+"'";
     }
 
-    public DataBasesOperation(Context contexto) {
+    public DataBaseOperation(Context contexto) {
         if (baseDatos == null) {
             baseDatos = new DataBaseHelper(contexto);
         }

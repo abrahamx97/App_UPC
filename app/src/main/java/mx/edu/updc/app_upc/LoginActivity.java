@@ -43,8 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button boton_ingresar;
     private View progress_view;
     private View login_formView;
-    public static final String url = "http://192.168.43.186/appupc/login.php";
-    private DataBasesOperation dbOperation = new DataBasesOperation(this);
+    public static final String url = "http://192.168.43.204/appupc/login.php";
+    private DataBaseOperation dbOperation = new DataBaseOperation(this);
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
         progress_view = findViewById(R.id.login_progress);
         login_formView =  findViewById(R.id.scroll_login_form);
         boton_ingresar = (Button) findViewById(R.id.boton_Ingresar);
-        final Intent sesionActivity = new Intent(this, SesionActivity.class);
+        final Intent sesionActivity = new Intent(this, GruposActivity.class);
         boton_ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,7 +198,7 @@ public class LoginActivity extends AppCompatActivity {
 
         private AsyncHttpClient client = new AsyncHttpClient();
 
-        private void cargarDatosMaestro(JSONObject data, DataBasesOperation db) {
+        private void cargarDatosMaestro(JSONObject data, DataBaseOperation db) {
             try {
                 db.getDb().beginTransaction();  //Se incia la transaccion
 
@@ -240,8 +240,8 @@ public class LoginActivity extends AppCompatActivity {
                         int encontrado = 1, activo = 1;
                         if (response.getInt("logeado") == encontrado) { //SE ENCONTRO AL USUARIO
                             if (response.getInt("activo") == activo) {
-                                Intent sesionActivity = new Intent(context, SesionActivity.class);
-                                DataBasesOperation dbOperation = new DataBasesOperation(context);
+                                Intent sesionActivity = new Intent(context, GruposActivity.class);
+                                DataBaseOperation dbOperation = new DataBaseOperation(context);
                                 cargarDatosMaestro(response, dbOperation);
                                 sesionActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 context.startActivity(sesionActivity);

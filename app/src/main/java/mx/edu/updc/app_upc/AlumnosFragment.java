@@ -1,16 +1,12 @@
 package mx.edu.updc.app_upc;
 
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.SQLException;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +22,7 @@ public class AlumnosFragment extends Fragment {
 
     private ListView alumnosList;
     private AlumnosAdapter alumnosAdapter;
-    private DataBasesOperation dbOperation;
+    private DataBaseOperation dbOperation;
     private Cursor alumnos;
     public AlumnosFragment() {
         // Required empty public constructor
@@ -46,7 +42,7 @@ public class AlumnosFragment extends Fragment {
     }
 
     public void setDatos_grupo(String id_grupo_materia){
-         dbOperation = new DataBasesOperation(getContext());
+         dbOperation = new DataBaseOperation(getContext());
          alumnos = dbOperation.obtenerAsistencia_Alumnos(id_grupo_materia);
     }
 

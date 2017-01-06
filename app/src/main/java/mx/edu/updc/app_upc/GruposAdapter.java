@@ -20,8 +20,8 @@ import java.util.List;
  * Created by root on 15/12/16.
  */
 
-public class AdapterGrupos extends ArrayAdapter<ItemGrupo> {
-    public AdapterGrupos(Context context, List<ItemGrupo> objects){
+public class GruposAdapter extends ArrayAdapter<ItemGrupo> {
+    public GruposAdapter(Context context, List<ItemGrupo> objects){
         super(context,0,objects);
     }
 

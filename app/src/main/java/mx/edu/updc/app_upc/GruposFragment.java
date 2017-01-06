@@ -3,7 +3,6 @@ package mx.edu.updc.app_upc;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -21,7 +20,6 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,12 +37,12 @@ import cz.msebera.android.httpclient.conn.ConnectTimeoutException;
 public class GruposFragment extends Fragment {
     private ListView gruposList;
     private FloatingActionButton fab_sincronizar;
-    private AdapterGrupos gruposAdapter;
-    private DataBasesOperation dbOperation;
+    private GruposAdapter gruposAdapter;
+    private DataBaseOperation dbOperation;
     private Cursor grupos,asistencia;
     private int indice_id_grupo_materia;
     private int indice_nombre_grupo;
-    private static final String url = "http://192.168.43.186/appupc/asistencias_asinc.php";
+    private static final String url = "http://192.168.43.204/appupc/asistencias_asinc.php";
     public static final SimpleDateFormat senhor_formato = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
     public GruposFragment() {
@@ -66,7 +64,7 @@ public class GruposFragment extends Fragment {
 
 
     public void inicializar() {
-        dbOperation = new DataBasesOperation(getContext());
+        dbOperation = new DataBaseOperation(getContext());
         grupos = dbOperation.obtenerGrupos();
         indice_id_grupo_materia = grupos.getColumnIndex(Grupos.ID);
         indice_nombre_grupo = grupos.getColumnIndex(Grupos.NOMBRE);
@@ -159,7 +157,7 @@ public class GruposFragment extends Fragment {
                     grupos.getString(indice_id_grupo_materia)));
         }
 
-        gruposAdapter = new AdapterGrupos(getContext(), items);
+        gruposAdapter = new GruposAdapter(getContext(), items);
         gruposList.setAdapter(gruposAdapter);
         return root;
     }
